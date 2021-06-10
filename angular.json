@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "defaultProject": "workflowdashboard",
+  "schematics": {
+    "@nrwl/angular": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
+    }
+  },
+  "projects": {
+    "workflowdashboard": {
+      "projectType": "application",
+      "root": "apps/workflowdashboard",
+      "sourceRoot": "apps/workflowdashboard/src",
+      "prefix": "indsat",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/workflowdashboard",
+            "index": "apps/workflowdashboard/src/index.html",
+            "main": "apps/workflowdashboard/src/main.ts",
+            "polyfills": "apps/workflowdashboard/src/polyfills.ts",
+            "tsConfig": "apps/workflowdashboard/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "apps/workflowdashboard/src/favicon.ico",
+              "apps/workflowdashboard/src/assets"
+            ],
+            "styles": ["apps/workflowdashboard/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/workflowdashboard/src/environments/environment.ts",
+                  "with": "apps/workflowdashboard/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "workflowdashboard:build:production"
+            },
+            "development": {
+              "browserTarget": "workflowdashboard:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "workflowdashboard:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/workflowdashboard/src/**/*.ts",
+              "apps/workflowdashboard/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/workflowdashboard"],
+          "options": {
+            "jestConfig": "apps/workflowdashboard/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "workflowdashboard-e2e": {
+      "root": "apps/workflowdashboard-e2e",
+      "sourceRoot": "apps/workflowdashboard-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/workflowdashboard-e2e/cypress.json",
+            "tsConfig": "apps/workflowdashboard-e2e/tsconfig.e2e.json",
+            "devServerTarget": "workflowdashboard:serve:development"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "workflowdashboard:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/workflowdashboard-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    }
+  }
+}
